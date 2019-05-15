@@ -1,55 +1,52 @@
 var defaultItemGrid = [
     [
         "bow",
+        "silvers",
         "hookshot",
-        "hammer",
-        "firerod",
-        "glove",
-        "moonpearl",
-    ],
-    [
-        "somaria",
-        "lantern",
-        "flute",
-        "book",
+        "mushroom",
+        "powder",
         "boots",
-        "flippers",
-        "mirror",
-    ],
-    [
-        "sword",
-        "tunic",
-        "shield",
-        "blank",
+		"shovel",
+    ],[
+        "firerod",
+        "icerod",
         "bombos",
         "ether",
         "quake",
-    ],
-        [
-        "shovel",
-        "mushroom",
-        "powder",
+        "glove",
+        "shield",
+    ],[
+        "lantern",
+        "hammer",
+        "flute",
+        "net",
+        "book",
+        "moonpearl",
+        "tunic",
+    ],[
         "bottle",
+        "somaria",
+        "byrna",
         "cape",
-        "icerod",
-        "silvers",
-    ],
-    [
+        "mirror",
+        "flippers",
+        "sword",
+    ],[
+        "boss0",
+        "boss1",
+        "boss2",
+        "blank",
+        "blank",
+        "boss11",
+        "boss10",
+    ],[
         "boss3",
         "boss4",
         "boss5",
         "boss6",
         "boss7",
         "boss8",
-        "boss9",
-    ],
-    [
-        "blank",
-        "boss0",
-        "boss1",
-        "boss2",
-        "agahnim",
-        "blank",
+		"boss9",
     ],
 ];
 
@@ -99,7 +96,7 @@ var itemsInit = {
     boss8: 1,
     boss9: 1,
     boss10: 1,
-    agahnim: 0,
+    boss11: 1,
 
     blank: false
 };
@@ -115,13 +112,16 @@ var dungeonchestsInit = {
     7: 3,
     8: 2,
     9: 5,
-    10: 20
+    10: 20,
+    11: 0
 };
 
+var bigkeyInit = [false, false, false, false, false, false, false, false, false, false, false, false];
+var smallkeyInit = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-var dungeonbeatenInit = [false, false, false, false, false, false, false, false, false, false, false];
-var prizesInit = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var medallionsInit = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var dungeonbeatenInit = [false, false, false, false, false, false, false, false, false, false, false, false];
+var prizesInit = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var medallionsInit = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 
 var itemsMin = {
@@ -141,8 +141,6 @@ var itemsMin = {
 	boss1: 1,
 	boss2: 1,
 
-    agahnim:0,
-
 	boss3: 1,
 	boss4: 1,
 	boss5: 1,
@@ -150,7 +148,8 @@ var itemsMin = {
 	boss7: 1,
 	boss8: 1,
 	boss9: 1,
-    boss10: 1
+    boss10: 1,
+    boss11: 1
 };
 
 var itemsMax = {
@@ -170,8 +169,6 @@ var itemsMax = {
 	boss1: 2,
 	boss2: 2,
 
-    agahnim: 1,
-
 	boss3: 2,
 	boss4: 2,
 	boss5: 2,
@@ -180,8 +177,9 @@ var itemsMax = {
 	boss8: 2,
 	boss9: 2,
     boss10: 2,
-	
-	chest0: 3,
+    boss11: 2,
+
+    chest0: 3,
     chest1: 2,
     chest2: 2,
 	chest3: 5,
@@ -191,5 +189,19 @@ var itemsMax = {
     chest7: 3,
     chest8: 2,
     chest9: 5,
-    chest10: 20
+    chest10: 20,
+    chest11: 0,
+
+    key0: 0,
+    key1: 1,
+    key2: 1,
+    key3: 6,
+    key4: 1,
+    key5: 3,
+    key6: 1,
+    key7: 2,
+    key8: 3,
+    key9: 4,
+    key10: 4,
+    key11: 2,
 };
