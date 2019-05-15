@@ -1,4 +1,3 @@
-
 <html lang="en">
     <head>
         <title>LttP Item Tracker</title>
@@ -9,6 +8,7 @@
         <script src="script/shared.js"></script>
         <script src="script/items.js"></script>
         <script src="script/chests.js"></script>
+		<script src="script/entrance.js"></script>
         <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
     </head>
 
@@ -40,12 +40,15 @@
                     <input type="checkbox" name="showchest" checked='checked' onchange="showChest(this)">Chests
                     <input type="checkbox" name="showcrystal" checked='checked' onchange="showCrystal(this)">Prizes
                     <input type="checkbox" name="showmedallion" checked='checked' onchange="showMedallion(this)">Medals<br>
+                    <input type="checkbox" name="showbigkeys" checked="checked" onchange="showbigkeys(this)">Big Keys
+                    <input type="checkbox" name="showsmallkeys" checked="checked" onchange="showsmallkeys(this)">Small Keys<br>
                     <input type="checkbox" name="showlabel" checked='checked' onchange="showLabel(this)">Dungeon Labels
                 </fieldset>
             </fieldset>
             <fieldset>
                 <legend>Map Tracker</legend>
-                <input type="checkbox" name="showmap" checked='checked' onchange="showTracker('mapdiv', this)">Enabled<br>
+                <input type="checkbox" name="showmap" checked='checked' onchange="showTracker('mapdiv', this)">Enabled
+				<input type="checkbox" name="entrance" checked='checked' onchange="showEntrance('mapdiv', this)">Entrance<br>
                 Size<input type="range" name='mapdivsize' value='100' max='200' min='1' onchange="setZoom('mapdiv', this)">
                 <span id='mapdivsize'>100%</span><br>
                 Position:
@@ -112,6 +115,8 @@
                 <span v-if="dungeonLabel" class="corner" :style="{ display: 'block', position: 'absolute'}">{{ dungeonLabel }}</span>
                 <span v-if="textCounter !== null" class="textCounter">{{ textCounter }}</span>
                 <span v-if="chestImage" @click.stop="clickChestBack" @contextmenu.prevent.stop="clickChestForward" :style="{ display: 'block', position: 'absolute', height: '32px', width: '32px', top: '32px', backgroundImage: chestImage }"></span>
+                <span v-if="bigKeyImage" @click.stop="clickBigKey" @contextmenu.prevent.stop="clickBigKey" :style="{ display: 'block', position: 'absolute', height: '32px', width: '16px', top: '32px', backgroundImage: bigKeyImage }"></span>
+                <span v-if="smallKeyImage" @click.stop="clickSmallKeyForward" @contextmenu.prevent.stop="clickSmallKeyBack" :style="{ display: 'block', position: 'absolute', height: '32px', width: '16px', top: '32px', left: '16px',  backgroundImage: smallKeyImage }"></span>
                 <span v-if="prizeImage" @click.stop="clickPrizeForward" @contextmenu.prevent.stop="clickPrizeBack" :style="{ display: 'block', position: 'absolute', height: '32px', width: '32px', top: '32px', left: '32px', backgroundImage: prizeImage }"></span>
                 <span v-if="medallionImage" @click.stop="clickMedallionForward" @contextmenu.prevent.stop="clickMedallionBack" :style="{ display: 'block', position: 'absolute', height: '32px', width: '32px', left: '32px', backgroundImage: medallionImage }"></span>
             </div>
