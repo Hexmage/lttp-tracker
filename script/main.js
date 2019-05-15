@@ -1,6 +1,8 @@
 
 var trackerOptions = {
-  showchests: true,
+  showchests: false,
+  showbigkeys: true,
+  showsmallkeys: true,
   showprizes: true,
   showmedals: true,
   showlabels: true,
@@ -18,6 +20,8 @@ for(var i = 0; i < chests.length; i++) {
 var trackerData = {
   items: itemsInit,
   dungeonchests: dungeonchestsInit,
+  bigkeys: bigkeyInit,
+  smallkeys: smallkeyInit,
   dungeonbeaten: dungeonbeatenInit,
   prizes: prizesInit,
   medallions: medallionsInit,
@@ -34,17 +38,19 @@ function getCookie() {
     return JSON.parse(str);
 }
 
-var cookiekeys = ['ts', 'map', 'iZoom', 'mZoom', 'mOrien', 'mPos', 'mapLogic', 'openmode', 'chest', 'prize', 'medal', 'label', 'items'];
+var cookiekeys = ['ts', 'map', 'iZoom', 'mZoom', 'mOrien', 'mPos', 'mapLogic', 'openmode', 'chest', 'bigkeys', 'smallkeys', 'prize', 'medal', 'label', 'items'];
 var cookieDefault = {
     ts:94,
     map:1,
     iZoom:100,
-    mZoom:50,
-    mOrien:0,
+    mZoom:90,
+    mOrien:1,
     mapLogic:'glitchless',
-    openmode:0,
+    openmode:1,
     mPos:0,
-    chest:1,
+    chest:0,
+	bigkeys:0,
+	smallkeys:0,
     prize:1,
     medal:1,
     label:1,
@@ -62,14 +68,12 @@ function loadCookie() {
 }
 
 function setConfigObject(configobj) {
-    //initGridRow(JSON.parse(JSON.stringify(configobj.items)));
-    //while(itemLayout.length > 0) {itemLayout.length.pop();}
-    //itemLayout = configobj.items;
-    //Array.prototype.push.apply(itemLayout, configobj.items);
     window.vm.itemRows = configobj.items;
 
     document.getElementsByName('showmap')[0].checked = !!configobj.map;
     document.getElementsByName('showmap')[0].onchange();
+	document.getElementsByName('entrance')[0].checked = !!configobj.entrance;
+	document.getElementsByName('entrance')[0].onchange();
     document.getElementsByName('itemdivsize')[0].value = configobj.iZoom;
     document.getElementsByName('itemdivsize')[0].onchange();
     document.getElementsByName('mapdivsize')[0].value = configobj.mZoom;
@@ -83,6 +87,10 @@ function setConfigObject(configobj) {
     document.getElementsByName('openmode')[0].onchange();    
     document.getElementsByName('showchest')[0].checked = !!configobj.chest;
     document.getElementsByName('showchest')[0].onchange();
+    document.getElementsByName('showbigkeys')[0].checked = !!configobj.bigkeys;
+    document.getElementsByName('showbigkeys')[0].onchange();
+    document.getElementsByName('showsmallkeys')[0].checked = !!configobj.smallkeys;
+    document.getElementsByName('showsmallkeys')[0].onchange();
     document.getElementsByName('showcrystal')[0].checked = !!configobj.prize;
     document.getElementsByName('showcrystal')[0].onchange();
     document.getElementsByName('showmedallion')[0].checked = !!configobj.medal;
@@ -113,7 +121,6 @@ function saveCookie() {
 
     cookieobj = getConfigObject();
     setCookie(cookieobj);
-
     cookielock = false;
 }
 
@@ -133,6 +140,7 @@ function getConfigObject() {
     configobj.ts = (new Date()).getTime();
 
     configobj.map = document.getElementsByName('showmap')[0].checked ? 1 : 0;
+	configobj.entrance = document.getElementsByName('entrance')[0].checked ? 1 : 0;
     configobj.iZoom = document.getElementsByName('itemdivsize')[0].value;
     configobj.mZoom = document.getElementsByName('mapdivsize')[0].value;
 
@@ -142,6 +150,8 @@ function getConfigObject() {
 
     configobj.openmode = document.getElementsByName('openmode')[0].checked ? 1 : 0;
     configobj.chest = document.getElementsByName('showchest')[0].checked ? 1 : 0;
+    configobj.bigkeys = document.getElementsByName('showbigkeys')[0].checked ? 1 : 0;
+    configobj.smallkeys = document.getElementsByName('showsmallkeys')[0].checked ? 1 : 0;
     configobj.prize = document.getElementsByName('showcrystal')[0].checked ? 1 : 0;
     configobj.medal = document.getElementsByName('showmedallion')[0].checked ? 1 : 0;
     configobj.label = document.getElementsByName('showlabel')[0].checked ? 1 : 0;
@@ -179,8 +189,59 @@ function unhighlightDungeon(x){
     document.getElementById("caption").innerHTML = "&nbsp;";
 }
 
+function highlightEntrance(x){
+    document.getElementById("entrance"+x).style.backgroundImage = "url(images/highlighted.png)";
+    document.getElementById("caption").innerHTML = entrances[x].name;
+}
+
+function unhighlightEntrance(x){
+    document.getElementById("entrance"+x).style.backgroundImage = "url(images/poi.png)";
+    document.getElementById("caption").innerHTML = "&nbsp;";
+}
+
+function clickEntrance(entrance, amt) {
+	entrances[entrance].color = entrances[entrance].color + amt;
+	if(entrances[entrance].color == 0)
+		entrances[entrance].color = 6;
+	if(entrances[entrance].color == 7)
+		entrances[entrance].color = 1;
+    if(entrances[entrance].color == 1)
+        document.getElementById('entrance'+entrance).className = "entrancespan green";
+    if(entrances[entrance].color == 2)
+        document.getElementById('entrance'+entrance).className = "entrancespan yellow";
+	if(entrances[entrance].color == 3)
+		document.getElementById('entrance'+entrance).className = "entrancespan orange";
+	if(entrances[entrance].color == 4)
+		document.getElementById('entrance'+entrance).className = "entrancespan purple";
+	if(entrances[entrance].color == 5)
+		document.getElementById('entrance'+entrance).className = "entrancespan blue";
+	if(entrances[entrance].color == 6)
+		document.getElementById('entrance'+entrance).className = "entrancespan grey";
+}
+
+function clickEntranceForward(e) {
+	this.clickEntrance(e, 1);
+}
+
+function clickEntranceBackward(e) {
+	this.clickEntrance(e, -1);
+	return false;
+}
+
 function showChest(sender) {
     trackerOptions.showchests = sender.checked;
+    refreshMap();
+    saveCookie();
+}
+
+function showbigkeys(sender) {
+    trackerOptions.showbigkeys = sender.checked;
+    refreshMap();
+    saveCookie();
+}
+
+function showsmallkeys(sender) {
+    trackerOptions.showsmallkeys = sender.checked;
     refreshMap();
     saveCookie();
 }
@@ -206,7 +267,7 @@ function showLabel(sender) {
 function setOrder(H) {
     if (H) {
         document.getElementById('layoutdiv').classList.remove('flexcontainer');
-    } 
+    }
     else {
         document.getElementById('layoutdiv').classList.add('flexcontainer');
     }
@@ -230,7 +291,8 @@ function setMapOrientation(H) {
     prevH = H;
 
 
-    var chest = document.getElementsByClassName("mapspan");
+    var chest = document.querySelectorAll(".mapspan, .entrancespan");
+	
     var i;
 
     if (H) {
@@ -285,6 +347,8 @@ function setLogic(logic) {
 function showSettings(sender) {
     if (trackerOptions.editmode) {
         trackerOptions.showchests = document.getElementsByName('showchest')[0].checked;
+        trackerOptions.showbigkeys = document.getElementsByName('showbigkeys')[0].checked;
+        trackerOptions.showsmallkeys = document.getElementsByName('showsmallkeys')[0].checked;
         trackerOptions.showprizes = document.getElementsByName('showcrystal')[0].checked;
         trackerOptions.showmedals = document.getElementsByName('showmedallion')[0].checked;
         trackerOptions.showlabels = document.getElementsByName('showlabel')[0].checked;
@@ -300,9 +364,9 @@ function showSettings(sender) {
             x.style.display = 'initial';
             sender.innerHTML = 'X';
         } else {
-            x.style.display = 'none';		
+            x.style.display = 'none';
             sender.innerHTML = '🔧';
-        } 
+        }
     }
 }
 
@@ -315,8 +379,34 @@ function showTracker(target, sender) {
     }
 }
 
+function showEntrance(target, sender) {
+	if (sender.checked) {
+		spansToHide = document.getElementsByClassName('mapspan');
+		for(var i = 0; i < spansToHide.length; i++){
+			spansToHide[i].style.display = "none"; 
+		}
+		spansToShow = document.getElementsByClassName('entrancespan');
+		for(var i = 0; i < spansToShow.length; i++){
+			spansToShow[i].style.display = ''; 
+		}
+	}
+	else {
+		spansToShow = document.getElementsByClassName('mapspan');
+		for(var i = 0; i < spansToShow.length; i++){
+			spansToShow[i].style.display = ''; 
+		}
+		spansToHide = document.getElementsByClassName('entrancespan');
+		for(var i = 0; i < spansToHide.length; i++){
+			spansToHide[i].style.display = "none"; 
+		}
+	}
+	saveCookie();
+}
+
 function EditMode() {
     trackerOptions.showchests = false;
+    trackerOptions.showbigkeys = false;
+    trackerOptions.showsmallkeys = false;
     trackerOptions.showprizes = false;
     trackerOptions.showmedals = false;
     trackerOptions.showlabels = false;
@@ -386,7 +476,7 @@ function itemConfigClick (sender) {
     if (trackerOptions.selected.item) {
         document.getElementById(trackerOptions.selected.item).style.border = '0px';
         sender.style.border = '3px solid yellow';
-        trackerOptions.selected = {item:item};	
+        trackerOptions.selected = {item:item};
     } else if (trackerOptions.selected.row !== undefined) {
         itemGrid[selected.row][selected.col]['item'].style.border = '1px solid white';
         var old = itemLayout[selected.row][selected.col];
@@ -471,6 +561,21 @@ function populateMapdiv() {
         s.className = "mapspan dungeon " + dungeons[k].canGetChest().getClassName();
         mapdiv.appendChild(s);
     }
+	
+	for(k=0; k<entrances.length; k++){
+		var s = document.createElement('span');
+		s.style.backgroundImage = 'url(images/poi.png)';
+		s.style.color = 'black';
+		s.id = 'entrance' + k;
+		s.onclick = new Function('clickEntranceForward('+k+')');
+		s.oncontextmenu = new Function('clickEntranceBackward('+k+'); return false');
+		s.onmouseover = new Function('highlightEntrance('+k+')');
+        s.onmouseout = new Function('unhighlightEntrance('+k+')');
+		s.style.left = entrances[k].x;
+        s.style.top = entrances[k].y;
+		s.className = "entrancespan green";
+		mapdiv.appendChild(s);
+	}
 }
 
 function populateItemconfig() {
@@ -505,7 +610,7 @@ function populateItemconfig() {
             rowitem.innerText = dungeons[key.substring(4)].label;
         }
         row.appendChild(rowitem);
-    }		
+    }
 }
 
 function enterPasscode() {
@@ -520,6 +625,8 @@ function createRoom() {
 function resetFirebase() {
     trackerData.items = itemsInit;
     trackerData.dungeonchests = dungeonchestsInit;
+    trackerData.bigkeys = bigkeyInit;
+    trackerData.smallkeys = smallkeyInit;
     trackerData.dungeonbeaten = dungeonbeatenInit;
     trackerData.prizes = prizesInit;
     trackerData.medallions = medallionsInit;
@@ -531,9 +638,7 @@ function useTourneyConfig() {
 
 }
 
-
 function initTracker() {
-    //createItemTracker(document.getElementById('itemdiv'));
     populateMapdiv();
     populateItemconfig();
 
@@ -542,7 +647,7 @@ function initTracker() {
 }
 
 function updateAll() {
-    if(trackerData.items && trackerData.dungeonchests && trackerData.dungeonbeaten && trackerData.prizes && trackerData.medallions && trackerData.chestsopened) {
+    if(trackerData.items && trackerData.dungeonchests && trackerData.dungeonbeaten && trackerData.prizes && trackerData.medallions && trackerData.chestsopened && trackerData.smallkeys && trackerData.bigkeys) {
       vm.displayVueMap = true;
       refreshMap();
     }
@@ -637,8 +742,28 @@ Vue.component('tracker-cell', {
       }
       return null;
     },
+    bigKeyImage: function() {
+      if(this.bossNum && this.trackerOptions && this.trackerOptions.showbigkeys && this.trackerData.bigkeys) {
+        if(this.trackerData.bigkeys[this.bossNum] && this.bossNum < 11) {
+          return "url(images/bigkey.png)";
+        } else {
+          return "url(images/nothing.png)";
+        }
+      }
+      return null;
+    },
+    smallKeyImage: function() {
+      if(this.bossNum && this.trackerOptions && this.trackerOptions.showsmallkeys && this.trackerData.smallkeys) {
+        if(this.trackerData.smallkeys[this.bossNum] > 0) {
+          return "url(images/smallkey" + this.trackerData.smallkeys[this.bossNum] + ".png)";
+        } else {
+          return "url(images/nothing.png)";
+        }
+      }
+      return null;
+    },
     prizeImage: function() {
-      if(this.bossNum && this.bossNum !== "10" && this.trackerOptions && this.trackerOptions.showprizes) {
+      if(this.bossNum && this.bossNum < 10 && this.trackerOptions && this.trackerOptions.showprizes) {
         return "url(images/dungeon" + this.trackerData.prizes[this.bossNum] + ".png)";
       }
       return null;
@@ -708,6 +833,24 @@ Vue.component('tracker-cell', {
     },
     clickChestBack: function(e) {
       this.clickChest(-1);
+    },
+    clickBigKey: function(e) {
+	  newVal = !this.trackerData.bigkeys[this.bossNum];
+      this.trackerData.bigkeys.splice(this.bossNum, 1, newVal);
+	  updateAll();
+    },
+    clickSmallKey: function(amt) {
+      var keyitem = 'key' + this.bossNum;
+      var modamt = itemsMax[keyitem] + 1;
+      var newVal = (this.trackerData.smallkeys[this.bossNum] + amt + modamt) % modamt;
+      this.trackerData.smallkeys.splice(this.bossNum, 1, newVal);
+	  updateAll();
+    },
+    clickSmallKeyForward: function(e) {
+      this.clickSmallKey(1);
+    },
+    clickSmallKeyBack: function(e) {
+      this.clickSmallKey(-1);
     },
     clickPrize: function(amt) {
       var newPrize = (this.trackerData.prizes[this.bossNum] + amt + 4) % 4;
